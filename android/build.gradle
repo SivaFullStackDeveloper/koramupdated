@@ -1,0 +1,37 @@
+plugins {
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        //maven { url = uri("https://maven.scijava.org/content/repositories/public/") }
+    }
+
+}
+
+rootProject.buildDir = "../build"
+
+
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                if (namespace == null) {
+                    namespace project.group
+                }
+            }
+        }
+    }
+}
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
