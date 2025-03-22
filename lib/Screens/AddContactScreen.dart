@@ -503,12 +503,13 @@ class _AddContactScreenState extends State<AddContactScreen> {
     UserDetail? loggedUser =
         Provider.of<UsersProviderClass>(context, listen: false).LoggedUser;
 
-    return GestureDetector(
+    return InkWell(
       onTap: () async {
         bool addFriendApproved = false;
         if (loggedUser != null) {
           if (!loggedUser.friendList!.contains(c.phoneNumber)) {
             showModalBottomSheet(
+              isScrollControlled: true,
               context: context,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
@@ -600,44 +601,6 @@ class _AddContactScreenState extends State<AddContactScreen> {
               ),
             );
 
-            // showDialog(
-            //     context: context,
-            //     builder: (ctx) => Scaffold(
-            //             body: Container(
-            //           color: Colors.white,
-            //           height: 200,
-            //           width: 200,
-            //           child: Center(
-            //             child: Column(
-            //               children: [
-            //                 Text("${c.publicName} add as friend"),
-            //                 TextButton(
-            //                     onPressed: () async {
-            //                       int res = await UsersProviderClass()
-            //                           .addFriendByPhoneNumber(c.phoneNumber!);
-            //                       if (res == 200) {
-            //                         log("added friend ${c.phoneNumber}");
-            //                         CommanWidgets().showSnackBar(context,
-            //                             "Added as friend", Colors.green);
-            //                         Navigator.of(context)
-            //                             .push(MaterialPageRoute(
-            //                                 builder: (ctx) => ChattingScreen(
-            //                                       otherUserNumber:
-            //                                           c.phoneNumber!,
-            //                                       callBack: () {
-            //                                         widget.callBackToInit();
-            //                                       },
-            //                                       otherUserDetail: c,
-            //                                     )));
-            //                       } else {
-            //                         return;
-            //                       }
-            //                     },
-            //                     child: Text("yes"))
-            //               ],
-            //             ),
-            //           ),
-            //         )));
             log("clicked number ${c.phoneNumber}");
           }
         }

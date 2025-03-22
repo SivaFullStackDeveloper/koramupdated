@@ -64,10 +64,9 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
   RTCPeerConnection? webrtcPeerConnection;
   late Map<String, dynamic> mediaConstraints;
   bool isOfferUser = false;
-  int videorequestCount=0;
-  bool displayVideoDialog=true;
+  int videorequestCount = 0;
+  bool displayVideoDialog = true;
   List<RTCIceCandidate> ListOfCandidates = [];
-
 
   // AudioPlayer? audioPlayer;
   @override
@@ -100,11 +99,12 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
   @override
   void initState() {
     AwesomeNotifications().cancel(123);
-       RuntimeStorage.instance.pendingNavigation=null;
+    RuntimeStorage.instance.pendingNavigation = null;
     Future.delayed(Duration.zero).then((value) async {
       // audioPlayer = AudioPlayer();
       // playRingback();
-      CallSocketService callSocketInit = Provider.of<CallSocketService>(context, listen: false);
+      CallSocketService callSocketInit =
+          Provider.of<CallSocketService>(context, listen: false);
       callSocketInit.init();
       await initRenderers();
       await CreateGlobalPeerConnection();
@@ -121,7 +121,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
           "caller": widget.caller,
           "callTo": widget.callTo,
           "time": DateTime.now().toString(),
-          "callerName":G.loggedinUser.publicName
+          "callerName": G.loggedinUser.publicName
         }));
         log("the call history length ${callHistory.length}");
         prefs.setStringList("call_history", callHistory);
@@ -129,21 +129,20 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
         log("insdie the incoming block ");
         receivingCall = true;
         theCallStatus = "Incoming ${widget.isVideoCall ? "Video" : ""} call";
-        try{
+        try {
           List<String> callHistory = prefs.getStringList("call_history") ?? [];
           callHistory.add(json.encode({
             "call_type": widget.isVideoCall ? "video" : "audio",
             "caller": widget.caller,
             "callTo": widget.callTo,
             "time": DateTime.now().toString(),
-            "callerName":""
+            "callerName": ""
           }));
           log("the call history length ${callHistory.length}");
           prefs.setStringList("call_history", callHistory);
-        }catch(e){
+        } catch (e) {
           log("erro while asving prefrence in audiocalling screen incoming ${e}");
         }
-
       }
       setState(() {});
     });
@@ -157,14 +156,15 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
       log("Creating Peerconnection ");
       final Map<String, dynamic> configuration = {
         'iceServers': [
-          {//146.190.142.19
+          {
+            //146.190.142.19
             // 'urls': [
             //   'turn:24.199.85.25:3478',
             //   'turn:koram.in:3478?transport=udp',
             //   'turn:koram.in:3478?transport=tcp'
             // ],
 
-             'urls': [
+            'urls': [
               'turn:146.190.142.19:3478',
               'turn:koram.in:3478?transport=udp',
               'turn:koram.in:3478?transport=tcp'
@@ -194,15 +194,11 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
       //   //
       //   // });
       // };
-      _localStream
-          .getAudioTracks()[0]
-          .enableSpeakerphone(false);
+      _localStream.getAudioTracks()[0].enableSpeakerphone(false);
       webrtcPeerConnection!.onTrack = (event) {
         if (event.streams.isNotEmpty) {
           _remoteRenderer.srcObject = event.streams[0];
-          setState(() {
-
-          });
+          setState(() {});
         }
       };
       return webrtcPeerConnection!;
@@ -276,7 +272,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
       final prefs = await SharedPreferences.getInstance();
       List<String> callHistory = prefs.getStringList("call_history") ?? [];
       callHistory.add(json.encode({
-        "call_type": widget.isVideoCall?"video":"audio",
+        "call_type": widget.isVideoCall ? "video" : "audio",
         "caller": widget.callTo,
         "callTo": widget.caller,
         "time": DateTime.now().toString()
@@ -292,7 +288,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
         }
       };
       // await callsocket.sendCandidates(widget.callTo, ListOfCandidates);
-      callsocket.offerData=null;
+      callsocket.offerData = null;
     } catch (e) {
       log("ERror at creating answer $e");
     }
@@ -359,11 +355,9 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
     });
 
     _localStream = videoStream;
-    videoControl=true;
-    displayVideoDialog=false;
-    setState(() {
-
-    });
+    videoControl = true;
+    displayVideoDialog = false;
+    setState(() {});
   }
 
   void onVideoCallAccepted() {
@@ -373,11 +367,9 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
   sendVideoRequest(CallSocketService socket) async {
     try {
       log(" sending video request  ${widget.callTo}");
-      theCallStatus="Requesting for video call";
+      theCallStatus = "Requesting for video call";
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-
-        });
+        setState(() {});
       });
 
       socket.sendVideoRequest(widget.callTo);
@@ -439,7 +431,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
       if (webrtcPeerConnection != null) {
         webrtcPeerConnection!.dispose();
       }
-      theCallStatus="Idle";
+      theCallStatus = "Idle";
       _localStream?.getTracks().forEach((track) {
         track.stop();
       });
@@ -466,29 +458,22 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
   Widget build(BuildContext context) {
     CallSocketService callSocket =
         Provider.of<CallSocketService>(context, listen: true);
-   if(callSocket.offerData!=null)
-   {
-     log("received offer ");
-     createAnswer(callSocket);
-
-   }
+    if (callSocket.offerData != null) {
+      log("received offer ");
+      createAnswer(callSocket);
+    }
     if (callSocket.temp != null) {
-
-             log("the call socket data received on build of Audio  ${callSocket.temp} ");
+      log("the call socket data received on build of Audio  ${callSocket.temp} ");
       switch (callSocket.temp["type"]) {
         case "callRequestResponse":
           {
-
             if (callSocket.temp["status"] == "Accepted") {
-
               createOffer(callSocket);
-              callSocket.temp=null;
+              callSocket.temp = null;
               log("inside call request accepted from socket ");
-
             } else if (callSocket.temp["status"] == "Reject") {
-              callSocket.temp=null;
+              callSocket.temp = null;
               _disconnect(callSocket, false);
-
             }
           }
           break;
@@ -504,8 +489,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
           {
             _setRemoteDescription(callSocket.temp["answer"], callSocket);
             log("received answer");
-            callSocket.temp=null;
-
+            callSocket.temp = null;
           }
           break;
         case "candidate":
@@ -524,137 +508,120 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
             _addCandidate(callSocket.temp['candidate'], callSocket);
 
             theCallStatus = "Connected";
-            callSocket.temp=null;
-
+            callSocket.temp = null;
           }
           break;
         case "leaveCall":
           {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${widget.otherPersonData == null ? "" : widget.otherPersonData!.publicName} rejected the call"),
+                        TextButton(
+                          onPressed: () async {
+                            callSocket.temp = null;
+                            Navigator.pop(context);
+                            _disconnect(callSocket, false);
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            });
+            callSocket.temp = null;
+          }
+          break;
 
+        case "changeToVideo":
+          {
+            displayVideoDialog = true;
+            videorequestCount++;
+            log("Received change to video request $videorequestCount");
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              displayVideoDialog
+                  ? showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          content: Container(
+                            width: MediaQuery.of(context).size.width - 50,
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      "Requesting for Video Call $videorequestCount"),
+                                  Row(
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            log("Accepted the video call ${widget.callTo}");
+                                            callSocket.sendVideoRequestResponse(
+                                                "Yes", widget.callTo);
+                                            displayVideoDialog = false;
+                                            onVideoCallAccepted();
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("Accept")),
+                                      TextButton(
+                                          onPressed: () {
+                                            log("rejected the video call  ${widget.callTo}");
+                                            callSocket.sendVideoRequestResponse(
+                                                "No", widget.callTo);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("Reject"))
+                                    ],
+                                  )
+                                ]),
+                          ),
+                        );
+                      })
+                  : null;
+            });
+
+            callSocket.temp = null;
+          }
+          break;
+        case "videoResponse":
+          {
+            if (callSocket.temp["isAccepted"] == "Yes") {
+              log("other user accepted the video call");
+              onVideoCallAccepted();
+            } else if (callSocket.temp["isAccepted"] == "No") {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "${widget.otherPersonData==null?"":widget.otherPersonData!.publicName} rejected the call"),
-                          TextButton(
-                            onPressed: () async {
-                              callSocket.temp=null;
-                              Navigator.pop(context);
-                              _disconnect(callSocket, false);
-
-                            },
-                            child: Text("OK"),
-                          ),
+                              "${widget.otherPersonData!.publicName} rejected the video call"),
                         ],
                       ),
                     );
                   },
                 );
               });
-              callSocket.temp=null;
-
-
-
+            }
+            callSocket.temp = null;
           }
           break;
-
-
-        case "changeToVideo":
-          {
-            displayVideoDialog=true;
-            videorequestCount++;
-            log("Received change to video request $videorequestCount");
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              displayVideoDialog?
-              showDialog(
-                  context: context,
-                  builder: (ctx) { return AlertDialog(
-
-                    content: Container(
-                      width: MediaQuery.of(context).size.width-50,
-                      height: MediaQuery.of(context).size.height/5,
-                      child: Column(
-                          mainAxisSize: MainAxisSize.min,
-
-                          children: [
-                        Text(
-                            "Requesting for Video Call $videorequestCount"),
-                        Row(
-                          children: [
-                            TextButton(
-                                onPressed: () {
-
-                                  log("Accepted the video call ${ widget.callTo}");
-                                  callSocket.sendVideoRequestResponse("Yes",
-                                      widget.callTo);
-                                  displayVideoDialog=false;
-                                  onVideoCallAccepted();
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Accept")),
-                            TextButton(
-                                onPressed: () {
-                                  log("rejected the video call  ${ widget.callTo}");
-                                  callSocket.sendVideoRequestResponse("No",
-                                      widget.callTo);
-                                  Navigator.pop(context);
-
-                                },
-                                child: Text("Reject"))
-                          ],
-                        )
-                      ]),
-                    ),
-                  );}):null;
-
-            });
-
-            callSocket.temp=null;
-
-          }
-          break;
-        case "videoResponse":{
-          if(callSocket.temp["isAccepted"]=="Yes")
-          {
-            log("other user accepted the video call");
-            onVideoCallAccepted();
-          }else if(callSocket.temp["isAccepted"]=="No")
-          {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
-              context: context,
-              builder: (context) {
-
-                return AlertDialog(
-
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                          "${widget.otherPersonData!.publicName} rejected the video call"),
-
-                    ],
-                  ),
-                );
-              },
-            );
-          });
-
-          }
-          callSocket.temp=null;
-
-        }
-        break;
       }
     }
 
@@ -739,7 +706,7 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
                       objectFit:
                           RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                     ),
-                  ),//when its video call then
+                  ), //when its video call then
             videoControl
                 ? Positioned(
                     top: 130,
@@ -829,7 +796,6 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
                                     videoControl = true;
                                   }
                                 });
-
                               },
                               child: Container(
                                 width: 63.76,
@@ -918,22 +884,17 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
                               // });
                               // _localStream.getVideoTracks()[0].enabled =
                               //     videoControl;
-                              if(videoControl)
-                              {
-                                if(_localStream.getVideoTracks()[0].enabled)
-                                {
-                                  _localStream.getVideoTracks()[0].enabled=false;
-
-                                }else
-                                {
-                                  _localStream.getVideoTracks()[0].enabled=true;
-
+                              if (videoControl) {
+                                if (_localStream.getVideoTracks()[0].enabled) {
+                                  _localStream.getVideoTracks()[0].enabled =
+                                      false;
+                                } else {
+                                  _localStream.getVideoTracks()[0].enabled =
+                                      true;
                                 }
-                              }else
-                              {
+                              } else {
                                 sendVideoRequest(callSocket);
                               }
-
                             },
                             child: Container(
                               width: 63.76,
@@ -957,56 +918,54 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
                           // videoControl
                           //     ?
                           GestureDetector(
-                                  onTap: () {
-                                    switchCamera();
-                                  },
-                                  child: Container(
-                                      width: 63.76,
-                                      height: 63.76,
-                                      decoration: ShapeDecoration(
-                                        color: backendColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(62.06),
-                                        ),
-                                      ),
-                                      child: Center(
-                                          child: SvgPicture.asset(
-                                              "assets/switchCam.svg"))),
+                            onTap: () {
+                              switchCamera();
+                            },
+                            child: Container(
+                                width: 63.76,
+                                height: 63.76,
+                                decoration: ShapeDecoration(
+                                  color: backendColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(62.06),
+                                  ),
                                 ),
-                          SizedBox(width:10),
+                                child: Center(
+                                    child: SvgPicture.asset(
+                                        "assets/switchCam.svg"))),
+                          ),
+                          Expanded(child: SizedBox()),
                           GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      speaker = !speaker;
-                                      _localStream
-                                          .getAudioTracks()[0]
-                                          .enableSpeakerphone(speaker);
-                                    });
-                                  },
-                                  child: Container(
-                                      width: 63.76,
-                                      height: 63.76,
-                                      decoration: ShapeDecoration(
-                                        color: backendColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(62.06),
-                                        ),
-                                      ),
-                                      child: Center(
-                                          child: speaker
-                                              ? SvgPicture.asset(
-                                                  "assets/speakerLogo.svg")
-                                              : Icon(
-                                                  Icons.volume_off,
-                                                  color: Colors.white,
-                                                ))),
+                            onTap: () {
+                              setState(() {
+                                speaker = !speaker;
+                                _localStream
+                                    .getAudioTracks()[0]
+                                    .enableSpeakerphone(speaker);
+                              });
+                            },
+                            child: Container(
+                                width: 63.76,
+                                height: 63.76,
+                                decoration: ShapeDecoration(
+                                  color: backendColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(62.06),
+                                  ),
                                 ),
+                                child: Center(
+                                    child: speaker
+                                        ? SvgPicture.asset(
+                                            "assets/speakerLogo.svg")
+                                        : Icon(
+                                            Icons.volume_off,
+                                            color: Colors.white,
+                                          ))),
+                          ),
                           Expanded(child: SizedBox()),
 
                           GestureDetector(
-                            onTap: ()  {
+                            onTap: () {
                               log("ending the call ");
                               _disconnect(callSocket, true);
                             },
@@ -1014,14 +973,16 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
                               width: 63.76,
                               height: 63.76,
                               decoration: ShapeDecoration(
-                                color: backendColor,
+                                color: Colors.red,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(62.06),
                                 ),
                               ),
                               child: Center(
-                                  child:
-                                      SvgPicture.asset("assets/endCall.svg")),
+                                  child: SvgPicture.asset(
+                                "assets/endCall.svg",
+                                color: Colors.white,
+                              )),
                             ),
                           ),
                         ],

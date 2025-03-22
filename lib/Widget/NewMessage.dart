@@ -150,53 +150,6 @@ class _NewMessageState extends State<NewMessage> {
 
   @override
   Widget build(BuildContext context) {
-    // log(widget.messageData.message.characters.length.toString());
-    // if (widget.messageData.message.characters.length > 31) {
-    //   log("more the none line ${widget.messageData.message.characters.length}");
-    //   spaceWidth = 10;
-    // } else {
-    //   log("within one line ${widget.messageData.message.characters.length} ");
-    //   spaceWidth = widget.messageData.message.characters.length - 31;
-    //   spaceWidth.abs();
-    // }
-    // DateTime dateTime = DateTime.parse(widget.messageData.time);
-    //
-    // // Format the time using intl package
-    // String formattedTime = DateFormat.jm().format(dateTime);
-    //
-    // String fileType = "";
-    // String getFileType(String extension) {
-    //   List<String> imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
-    //   List<String> videoExtensions = ['mp4', 'avi', 'mkv', 'mov', 'flv'];
-    //   List<String> documentExtensions = [
-    //     'pdf',
-    //     'doc',
-    //     'docx',
-    //     'txt',
-    //     'ppt',
-    //     'xls'
-    //   ];
-    //
-    //   if (imageExtensions.contains(extension)) {
-    //     return 'Image';
-    //   } else if (videoExtensions.contains(extension)) {
-    //     return 'Video';
-    //   } else if (documentExtensions.contains(extension)) {
-    //     return 'Document';
-    //   } else {
-    //     return 'Unknown';
-    //   }
-    // }
-    //
-    // bool sentByMe = widget.messageData.sentBy == G.userId;
-    // String ext;
-    // log("message Filename ${widget.messageData.fileName}");
-    // if (widget.messageData.fileName != null) {
-    //   String ext = widget.messageData.fileName!.split(".").last;
-    //   log("Ext $ext");
-    //   fileType = getFileType(ext);
-    //   log("File Type: $fileType");
-    // }
     var fullwidth = MediaQuery.of(context).size.width;
 
     Widget FileShowWidget(String Type) {
@@ -206,75 +159,7 @@ class _NewMessageState extends State<NewMessage> {
             return GestureDetector(
               onTap: () {
                 log("clickeddd");
-                // showDialog(
-                //   context: context,
-                //   builder: (BuildContext context) {
-                //     return
-                //
-                //         //   AlertDialog(
-                //         //   // actions: [TextButton(onPressed: (){Navigator.pop(context);}, child: Text("X"))],
-                //         //   actionsAlignment: MainAxisAlignment.start,
-                //         //   scrollable: true,
-                //         //   title: GestureDetector(
-                //         //       onTap:(){
-                //         //         Navigator.pop(context);
-                //         //       },child: Text("Close")),
-                //         //
-                //         //   titleTextStyle: TextStyle(fontSize: 15,color: Colors.red),
-                //         //   titlePadding: EdgeInsets.fromLTRB(5,10, 5,5),
-                //         //   contentPadding: EdgeInsets.fromLTRB(5,0, 5,5),
-                //         //   content: Column(
-                //         //     children: [
-                //         //       Container(
-                //         //
-                //         //         width: MediaQuery.of(context).size.width,
-                //         //         height: MediaQuery.of(context).size.height,
-                //         //         child: CachedNetworkImage( imageUrl: G.HOST +
-                //         //         "api/v1/images/" +
-                //         //         widget.messageData.fileName.toString(),
-                //         //         filterQuality: FilterQuality.medium
-                //         //
-                //         //         ),
-                //         //       ),
-                //         //     ],
-                //         //   ),
-                //         // );
-                //         AlertDialog(
-                //
-                //       // Making the dialog full-screen
-                //       insetPadding: EdgeInsets.all(0),
-                //       contentPadding: EdgeInsets.all(0),
-                //       content: Stack(
-                //         children: [
-                //           // Full-screen image
-                //           Positioned.fill(
-                //             child: CachedNetworkImage(
-                //               imageUrl: G.HOST +
-                //                   "api/v1/images/" +
-                //                   widget.messageData.fileName.toString(),
-                //               filterQuality: FilterQuality.medium,
-                //               // fit: BoxFit.fill,
-                //               height: MediaQuery.of(context).size.height,
-                //               width: fullwidth,
-                //             ),
-                //
-                //           ),
-                //           // Back icon
-                //           Positioned(
-                //             top: 16.0,
-                //             left: 16.0,
-                //             child: IconButton(
-                //               icon: Icon(Icons.arrow_back, color: Colors.white),
-                //               onPressed: () {
-                //                 Navigator.pop(context);
-                //               },
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   },
-                // );
+
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -404,7 +289,9 @@ class _NewMessageState extends State<NewMessage> {
                                     ),
                                     widget.messageData.messageStatus == "read"
                                         ? SvgPicture.asset(
-                                            "assets/blueTick.svg")
+                                            "assets/blueTick.svg",
+                                            color: Colors.grey,
+                                          )
                                         : widget.messageData.messageStatus ==
                                                 "sent"
                                             ? SvgPicture.asset(
@@ -600,10 +487,15 @@ class _NewMessageState extends State<NewMessage> {
                                   ),
                                 ),
                                 widget.messageData.messageStatus == "read"
-                                    ? SvgPicture.asset("assets/blueTick.svg")
+                                    ? SvgPicture.asset(
+                                        "assets/blueTick.svg",
+                                        color: Colors.white,
+                                      )
                                     : widget.messageData.messageStatus == "sent"
                                         ? SvgPicture.asset(
-                                            "assets/whiteTick.svg")
+                                            "assets/whiteTick.svg",
+                                            color: Colors.grey,
+                                          )
                                         : SvgPicture.asset(
                                             "assets/messageNotSent.svg",
                                             width: 13,
@@ -611,118 +503,9 @@ class _NewMessageState extends State<NewMessage> {
                                           )
                               ],
                             ),
-                            // Positioned(
-                            //   right: 0,
-                            //   bottom: 0,
-                            //   child: Row(
-                            //     crossAxisAlignment: CrossAxisAlignment.end,
-                            //     children: [
-                            //       Padding(
-                            //         padding: const EdgeInsets.only(right: 4),
-                            //         child: Text(
-                            //           formattedTime,
-                            //           textAlign: TextAlign.end,
-                            //           style: TextStyle(
-                            //             color: Color(0xFFFFEADC),
-                            //             fontSize: 10,
-                            //             fontFamily: 'Helvetica',
-                            //             fontWeight: FontWeight.w400,
-                            //           ),
-                            //         ),
-                            //       ),
-                            //       widget.messageData.messageStatus=="read"?
-                            //       SvgPicture.asset("assets/blueTick.svg"):widget.messageData.messageStatus=="sent"?
-                            //            SvgPicture.asset("assets/whiteTick.svg"):
-                            //       SvgPicture.asset("assets/messageNotSent.svg",width: 13,color: Colors.white,)
-                            //
-                            //     ],
-                            //   ),
-                            // ),
                           ],
                         ),
-                        // Stack(
-                        //   clipBehavior: Clip.hardEdge,
-                        //   children: [
-                        //     Padding(
-                        //       padding: const EdgeInsets.only(bottom: 20),
-                        //       child: RichText(
-                        //           text: TextSpan(
-                        //               text: widget.messageData.message,
-                        //               style: TextStyle(
-                        //                 color: Colors.white,
-                        //                 fontSize: 14,
-                        //                 fontFamily: 'Helvetica',
-                        //                 fontWeight: FontWeight.w400,
-                        //               ),
-                        //               children: [
-                        //             WidgetSpan(
-                        //                 child: Column(
-                        //               children: [
-                        //                 SizedBox(
-                        //                   height: 10,
-                        //                   width: 60,
-                        //                 )
-                        //               ],
-                        //             ))
-                        //           ])),
-                        //     ),
-                        //     Positioned(
-                        //       right: 0,
-                        //       bottom: 0,
-                        //       child: Row(
-                        //         children: [
-                        //           Padding(
-                        //             padding: const EdgeInsets.only(right: 0),
-                        //             child: Text(
-                        //               formattedTime,
-                        //               textAlign: TextAlign.end,
-                        //               style: TextStyle(
-                        //                 color: Color(0xFFFFEADC),
-                        //                 fontSize: 10,
-                        //                 fontFamily: 'Helvetica',
-                        //                 fontWeight: FontWeight.w400,
-                        //               ),
-                        //             ),
-                        //           ),
-                        //           Text(
-                        //             widget.messageData.messageStatus,
-                        //             // style: TextStyle(
-                        //             //   color: Color(0xFFFFEADC),
-                        //             //   fontSize: 10,
-                        //             //   fontFamily: 'Helvetica',
-                        //             //   fontWeight: FontWeight.w400,
-                        //             // ),
-                        //           )
-                        //           // ?
-                        //           // // Text("DELIVERED"):Text("SEEN ")
-                        //           // SvgPicture.asset("assets/blueTick.svg")
-                        //           // : SvgPicture.asset("assets/whiteTick.svg")
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                       ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     Text(
-                //       messageData.time.toString().substring(11, 16),
-                //       textAlign: TextAlign.end,
-                //       style: TextStyle(
-                //         color: Color(0xFF707070),
-                //         fontSize: 10,
-                //         fontFamily: 'Helvetica',
-                //         fontWeight: FontWeight.w400,
-                //         height: 1.60,
-                //       ),
-                //     ),
-                //     SizedBox(
-                //       width: 4,
-                //     ),
-                //     SvgPicture.asset("assets/ReadCheck.svg")
-                //   ],
-                // ),
               ],
             ),
           )

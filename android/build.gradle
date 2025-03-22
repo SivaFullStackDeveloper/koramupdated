@@ -1,12 +1,14 @@
 plugins {
     id 'com.google.gms.google-services' version '4.4.2' apply false
+    
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
-        //maven { url = uri("https://maven.scijava.org/content/repositories/public/") }
+        maven { url 'https://jitpack.io' } 
+        maven { url = uri("https://maven.scijava.org/content/repositories/public/") }
     }
 
 }
