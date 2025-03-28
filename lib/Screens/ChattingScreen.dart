@@ -700,19 +700,28 @@ class _ChattingScreenState extends State<ChattingScreen>
                       width: 12,
                     ),
                     SizedBox(
-                      height: 40,
-                      width: 40,
-                      child: CommanWidgets().cacheProfileDisplay(
-                          widget.otherUserDetail!.publicProfilePicUrl!),
-                    )
+                        height: 40,
+                        width: 40,
+                        child: widget.otherUserDetail?.publicProfilePicUrl !=
+                                null
+                            ? CommanWidgets().cacheProfileDisplay(widget
+                                    .otherUserDetail?.publicProfilePicUrl ??
+                                "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg")
+                            : CircleAvatar(
+                                backgroundColor: Colors.grey.shade300,
+                                child: Icon(Icons.person,
+                                    color: Colors.grey.shade600),
+                                radius: 25,
+                              )
 
-                    // CachedNetworkImage(imageUrl: G.HOST +
-                    //     "api/v1/images/" +
-                    //     widget.groupName!.publicProfilePicUrl!,filterQuality: FilterQuality.low,),
-                    // CircleAvatar(
-                    //     backgroundImage: CachedNetworkImageProvider(G.HOST +
-                    //         "api/v1/images/" +
-                    //         widget.groupName!.publicProfilePicUrl!,scale: 2)),
+                        // CachedNetworkImage(imageUrl: G.HOST +
+                        //     "api/v1/images/" +
+                        //     widget.groupName!.publicProfilePicUrl!,filterQuality: FilterQuality.low,),
+                        // CircleAvatar(
+                        //     backgroundImage: CachedNetworkImageProvider(G.HOST +
+                        //         "api/v1/images/" +
+                        //         widget.groupName!.publicProfilePicUrl!,scale: 2)),
+                        )
                   ],
                 ),
                 Expanded(
@@ -725,7 +734,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.otherUserDetail!.privateName!,
+                          widget.otherUserDetail!.privateName ?? "Unknown User",
                           style: TextStyle(
                             color: Color(0xFF303030),
                             fontSize: 16,
@@ -881,7 +890,7 @@ class _ChattingScreenState extends State<ChattingScreen>
               ),
             ),
             Positioned(
-              bottom: 0,
+              bottom: 60,
               left: 0,
               right: 0,
               child: GestureDetector(
@@ -997,7 +1006,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                           //   height: 40,
                           //   child: Image.asset("assets/Group 516.png"),
                           // ),
-                        )
+                        ),
                       ],
                     ),
                   ),

@@ -128,7 +128,7 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
     if (widget.isFromHome) {
       log("initializing public scren");
 
-      _nameController.text = userPro.LoggedUser!.publicName!;
+      _nameController.text = userPro.LoggedUser!.publicName ?? "No Name";
 
       genderValue = userPro.LoggedUser!.publicGender;
       checked = true;
@@ -356,17 +356,14 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
                                         radius: 60,
                                         backgroundColor: Colors.grey[300],
                                       )
-                                    : widget.isFromHome &&
-                                            userPro.LoggedUser != null
-                                        ? CommanWidgets().cacheProfileDisplay(
-                                            userPro.LoggedUser!
-                                                .publicProfilePicUrl!)
-                                        : CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                                "assets/profile.png"),
-                                            radius: 60,
-                                            backgroundColor: Colors.grey[300],
-                                          )
+                                    : widget.isFromHome && userPro.LoggedUser?.publicProfilePicUrl != null
+    ? CommanWidgets().cacheProfileDisplay(
+        userPro.LoggedUser!.publicProfilePicUrl!)
+    : CircleAvatar(
+        backgroundImage: AssetImage("assets/profile.png"),
+        radius: 60,
+        backgroundColor: Colors.grey[300],
+      )
                                 // : CircleAvatar(
                                 //     radius: 60,
                                 //     backgroundColor: Colors.grey[300],

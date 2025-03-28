@@ -16,6 +16,7 @@ import 'package:koram_app/Helper/DBHelper.dart';
 import 'package:koram_app/Helper/Helper.dart';
 import 'package:koram_app/Helper/NotificationServices.dart';
 import 'package:koram_app/Helper/RuntimeStorage.dart';
+import 'package:koram_app/Helper/background_service.dart';
 import 'package:koram_app/Helper/color.dart';
 import 'package:koram_app/Models/ChatRoom.dart';
 import 'package:koram_app/Models/Message.dart';
@@ -48,6 +49,7 @@ String modifiedString = "";
 bool isBackgroundCall = false;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await BackgroundService.initialize();
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   AwesomeNotifications().initialize(null, [
@@ -78,120 +80,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-  //   alert: true,
-  //   badge: true,
-  //   sound: true,
-  // );
-  log("initialized firebase");
-  FirebaseMessaging.instance.getToken().then((value) {
-    G.fireBaseToken = value;
-    log("fireBase Token $value");
-    prefs.setString("FirebaseToken", value.toString());
-  });
-  // FirebaseMessaging.onMessage.listen((RemoteMessage event) async{
-  //   log("REceived firebase message ");
-  //   log( "Onmessageeee dataaaa ${event.data}");
-  //   // {receiverNumber: +918425856783, caller: +919876543211, name: theRedmi, type: CallRequest, callType: Audio}
-  //        if(event.data["type"]=="CallRequest")
-  //        {
-  //          log("call request receivedd");
-  //          AwesomeNotifications().createNotification(
-  //              content: NotificationContent(
-  //                  id: 123,
-  //                  channelKey: "call_channel",
-  //                  color: Colors.white,
-  //                  title: event.data["name"],
-  //                  body: "Calling...",
-  //                  category: NotificationCategory.Call,
-  //                  wakeUpScreen: true,
-  //                  fullScreenIntent: true,
-  //                  autoDismissible: false,
-  //                  backgroundColor: RuntimeStorage.instance.PrimaryOrange),
-  //              actionButtons: [
-  //                NotificationActionButton(
-  //                    key: "accept_call",
-  //                    label: "Accept Call",
-  //                    color: Colors.green,
-  //                    autoDismissible: true),
-  //                NotificationActionButton(
-  //                    key: "reject_call",
-  //                    label: "Reject Call",
-  //                    color: Colors.red,
-  //                    autoDismissible: true)
-  //              ]);
-  //          AwesomeNotifications().setListeners(onActionReceivedMethod: (w) async {
-  //            if (w.buttonKeyPressed == "accept_call") {
-  //              print("call accepted");
-  //              log("making call request");
-  //
-  //              // _channel.sink.add(jsonEncode({
-  //              //   "type": "callRequestResponse",
-  //              //   "callStatus": "Accepted",
-  //              //   "name": message.data["name"],
-  //              //   "caller_Name": G.userId,
-  //              //   "callType": "Audio",
-  //              // }));
-  //              // Extracting required data from the notification payload
-  //              //     {receiverNumber: +918425856783, caller: +919876543211, name: theRedmi, type: CallRequest, callType: Audio}
-  //              String callerName = event.data["name"] ?? "Unknown Caller";
-  //              String callerNumber = event.data["caller"] ?? "";
-  //              bool isVideo=false;
-  //                        if(event.data["callType"]=="Audio")
-  //                        {
-  //                          isVideo=false;
-  //                        }else if(event.data["callType"]=="Video")
-  //                        {
-  //                          isVideo=true;
-  //                        }
-  //              // Navigate to AudioCallingScreen
-  //              MainNavigatorKey.currentState?.pushNamed(
-  //                '/audioCallScreen',
-  //                arguments: {
-  //                  'callerName': callerName,
-  //                  'callerNumber': callerNumber,
-  //                  'isIncoming': true,
-  //                  'isVideoCall': isVideo,
-  //                },
-  //              );
-  //
-  //
-  //
-  //            } else if (w.buttonKeyPressed == "reject_call") {
-  //              // _channel.sink.add(jsonEncode({
-  //              //   "type": "callRequestResponse",
-  //              //   "callStatus": "Rejected",
-  //              //   "name": message.data["name"],
-  //              //   "caller_Name": G.userId,
-  //              //   "callType": "Audio",
-  //              // }));
-  //              print("call rejected");
-  //              AwesomeNotifications().cancel(123);
-  //            } else {
-  //              print("clicked on notification");
-  //            }
-  //          });
-  //        }
-  //   // AwesomeNotifications().createNotification(
-  //   //   content: NotificationContent(
-  //   //     id: 10,
-  //   //     channelKey: 'message_channel',
-  //   //     title: "yo",
-  //   //     body: "yoyoy",
-  //   //     displayOnBackground: true,
-  //   //     displayOnForeground: true,
-  //   //     wakeUpScreen: true,
-  //   //     backgroundColor: Colors.white,
-  //   //     notificationLayout: NotificationLayout.Default,
-  //   //   ),
-  //   // );
-  // });
-
-  // FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? value)async
-  // {
-  //   print("onInitiall: $value");
-  //
-  // });
 
   FirebaseMessaging.onBackgroundMessage(fireBaseMessagingBackgroundHandler);
   AwesomeNotifications().setListeners(
@@ -263,63 +151,6 @@ Future<void> fireBaseMessagingBackgroundHandler(RemoteMessage event) async {
                   color: Colors.red,
                   autoDismissible: true)
             ]);
-        // AwesomeNotifications().setListeners(
-        //     onActionReceivedMethod: (w) async {
-        //       if (w.buttonKeyPressed == "accept_call") {
-        //         print("call accepted");
-        //         log("making call request");
-        //
-        //         // _channel.sink.add(jsonEncode({
-        //         //   "type": "callRequestResponse",
-        //         //   "callStatus": "Accepted",
-        //         //   "name": message.data["name"],
-        //         //   "caller_Name": G.userId,
-        //         //   "callType": "Audio",
-        //         // }));
-        //         // Extracting required data from the notification payload
-        //         //     {receiverNumber: +918425856783, caller: +919876543211, name: theRedmi, type: CallRequest, callType: Audio}
-        //         String callerName = event.data["name"] ?? "Unknown Caller";
-        //         String callerNumber = event.data["caller"] ?? "";
-        //         bool isVideo = false;
-        //         if (event.data["callType"] == "Audio") {
-        //           isVideo = false;
-        //         } else if (event.data["callType"] == "Video") {
-        //           isVideo = true;
-        //         }
-        //         // Navigate to AudioCallingScreen
-        //         RuntimeStorage.instance.pendingNavigation = {
-        //           'route': '/audioCallScreen',
-        //           'arguments': {
-        //             'callerName': event.data["name"] ?? "Unknown Caller",
-        //             'callerNumber': event.data["caller"] ?? "",
-        //             'isIncoming': true,
-        //             'isVideoCall': event.data["callType"] == "Video",
-        //           },
-        //         };
-        //         MainNavigatorKey.currentState?.pushNamed(
-        //           '/audioCallScreen',
-        //           arguments: {
-        //             'callerName': callerName,
-        //             'callerNumber': callerNumber,
-        //             'isIncoming': true,
-        //             'isVideoCall': isVideo,
-        //           },
-        //         );
-        //
-        //       } else if (w.buttonKeyPressed == "reject_call") {
-        //         // _channel.sink.add(jsonEncode({
-        //         //   "type": "callRequestResponse",
-        //         //   "callStatus": "Rejected",
-        //         //   "name": message.data["name"],
-        //         //   "caller_Name": G.userId,
-        //         //   "callType": "Audio",
-        //         // }));
-        //         print("call rejected");
-        //         AwesomeNotifications().cancel(123);
-        //       } else {
-        //         print("clicked on notification");
-        //       }
-        //     });
       }
       break;
 
@@ -401,15 +232,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   print("call accepted");
                   log("making call request");
 
-                  // _channel.sink.add(jsonEncode({
-                  //   "type": "callRequestResponse",
-                  //   "callStatus": "Accepted",
-                  //   "name": message.data["name"],
-                  //   "caller_Name": G.userId,
-                  //   "callType": "Audio",
-                  // }));
-                  // Extracting required data from the notification payload
-                  //     {receiverNumber: +918425856783, caller: +919876543211, name: theRedmi, type: CallRequest, callType: Audio}
                   String callerName = event.data["name"] ?? "Unknown Caller";
                   String callerNumber = event.data["caller"] ?? "";
                   bool isVideo = false;
@@ -456,6 +278,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   @override
+  void initState() {
+    _showLocalNotification();
+
+    WidgetsBinding.instance.addObserver(this);
+    load();
+    WidgetsBinding.instance.addPostFrameCallback((_) => updateColor());
+  
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // TODO: implement didChangeAppLifecycleState
     super.didChangeAppLifecycleState(state);
@@ -467,6 +299,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     log("App lifecycle state changed: $state, App Active: $_isAppActive");
   }
 
+  updateColor() async {
+    var color = await BackgroundService.getStoredColor();
+    setState(() {
+      backendColor = color;
+    });
+  }
+
   @override
   void dispose() {
     // Remove the observer
@@ -474,48 +313,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _showLocalNotification();
+  // MaterialColor orangePrimary = MaterialColor(0xFFFF6701, {
+  //   50: Color(0xFFFFE6D9),
+  //   100: Color(0xFFFFC4A6),
+  //   200: Color(0xFFFFA274),
+  //   300: Color(0xFFFF803F),
+  //   400: Color(0xFFFF6B1F),
+  //   500: Color(0xFFFF6B1F), // Primary color
+  //   600: Color(0xFFFF6B1F),
+  //   700: Color(0xFFFF6B1F),
+  //   800: Color(0xFFFF6B1F),
+  //   900: Color(0xFFFF6B1F),
+  // });
 
-    WidgetsBinding.instance.addObserver(this);
-    load();
-    // AwesomeNotifications().setListeners(
-    //     onActionReceivedMethod: NotificationController.onActionReceivedMethod,
-    //     onNotificationCreatedMethod:
-    //         NotificationController.onNotificationCreatedMethod,
-    //     onNotificationDisplayedMethod:
-    //         NotificationController.onNotificationDisplayedMethod,
-    //     onDismissActionReceivedMethod:
-    //         NotificationController.onDismissActionReceivedMethod);
-  }
-
-  MaterialColor orangePrimary = MaterialColor(0xFFFF6701, {
-    50: Color(0xFFFFE6D9),
-    100: Color(0xFFFFC4A6),
-    200: Color(0xFFFFA274),
-    300: Color(0xFFFF803F),
-    400: Color(0xFFFF6B1F),
-    500: Color(0xFFFF6B1F), // Primary color
-    600: Color(0xFFFF6B1F),
-    700: Color(0xFFFF6B1F),
-    800: Color(0xFFFF6B1F),
-    900: Color(0xFFFF6B1F),
-  });
-
-  MaterialColor Higlight = MaterialColor(0xFFF5F5F5, {
-    50: Color(0xFFF5F5F5),
-    100: Color(0xFFF5F5F5),
-    200: Color(0xFFF5F5F5),
-    300: Color(0xFFF5F5F5),
-    400: Color(0xFFF5F5F5),
-    500: Color(0xFFF5F5F5),
-    600: Color(0xFFF5F5F5),
-    700: Color(0xFFF5F5F5),
-    800: Color(0xFFF5F5F5),
-    900: Color(0xFFF5F5F5),
-  });
+  // MaterialColor Higlight = MaterialColor(0xFFF5F5F5, {
+  //   50: Color(0xFFF5F5F5),
+  //   100: Color(0xFFF5F5F5),
+  //   200: Color(0xFFF5F5F5),
+  //   300: Color(0xFFF5F5F5),
+  //   400: Color(0xFFF5F5F5),
+  //   500: Color(0xFFF5F5F5),
+  //   600: Color(0xFFF5F5F5),
+  //   700: Color(0xFFF5F5F5),
+  //   800: Color(0xFFF5F5F5),
+  //   900: Color(0xFFF5F5F5),
+  // });
   load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {

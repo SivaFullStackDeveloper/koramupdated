@@ -82,7 +82,7 @@ class G {
     http.Response response = await http.post(Uri.parse(url), body: {
       "phone_number": phone,
       "otp": otp,
-      "firebaseToken": prefs.getString("FirebaseToken")
+      "firebaseToken": prefs.getString("FirebaseToken")?? ""
     });
 
     var responseData = jsonDecode(response.body);

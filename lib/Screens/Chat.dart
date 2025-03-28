@@ -661,7 +661,7 @@ class _ChatScreenState extends State<ChatScreen>
             //CHAT
 
             RefreshIndicator(
-              color: backendColor,
+                color: backendColor,
                 onRefresh: () async {
                   log("refresh indicator called ");
                   await chatInitialize();
@@ -706,7 +706,9 @@ class _ChatScreenState extends State<ChatScreen>
                                                   width: 56,
                                                   height: 56,
                                                   child: SvgPicture.asset(
-                                                      "assets/StoryNotseen.svg",color: backendColor,))
+                                                    "assets/StoryNotseen.svg",
+                                                    color: backendColor,
+                                                  ))
                                               : SizedBox(),
                                           Padding(
                                               padding: const EdgeInsets.only(
@@ -718,8 +720,14 @@ class _ChatScreenState extends State<ChatScreen>
                                                       .cacheProfileDisplay(
                                                           FinalFriendList[i]
                                                               .publicProfilePicUrl!)
-                                                  : AssetImage(
-                                                      "assets/profile.png")
+                                                  : CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.grey.shade300,
+                                                      child: Icon(Icons.person,
+                                                          color: Colors
+                                                              .grey.shade600),
+                                                      radius: 25,
+                                                    )
 
                                               // Center(
                                               //   child: Container(
@@ -781,7 +789,8 @@ class _ChatScreenState extends State<ChatScreen>
                                               SizedBox(
                                                 child: Text(
                                                   FinalFriendList[i]
-                                                      .publicName!,
+                                                          .publicName ??
+                                                      "Unknown User",
                                                   style: TextStyle(
                                                       color: Color(0xFF303030),
                                                       fontSize: 16,
@@ -866,8 +875,7 @@ class _ChatScreenState extends State<ChatScreen>
                                                                 bottom: 4),
                                                         decoration:
                                                             ShapeDecoration(
-                                                          color:
-                                                              backendColor,
+                                                          color: backendColor,
                                                           shape:
                                                               RoundedRectangleBorder(
                                                             borderRadius:
@@ -1031,7 +1039,7 @@ class _ChatScreenState extends State<ChatScreen>
             ///STory block from here
 
             RefreshIndicator(
-             color: backendColor,
+              color: backendColor,
               onRefresh: () async {
                 await chatInitialize();
               },
@@ -1174,7 +1182,9 @@ class _ChatScreenState extends State<ChatScreen>
                                           width: 64,
                                           height: 64,
                                           child: SvgPicture.asset(
-                                              "assets/StoryNotseen.svg",color: backendColor,)),
+                                            "assets/StoryNotseen.svg",
+                                            color: backendColor,
+                                          )),
                                       Padding(
                                         padding: const EdgeInsets.only(left: 7),
                                         child: Center(
@@ -1335,7 +1345,9 @@ class _ChatScreenState extends State<ChatScreen>
                                                       width: 65,
                                                       height: 65,
                                                       child: SvgPicture.asset(
-                                                          "assets/StoryNotseen.svg",color: backendColor,)),
+                                                        "assets/StoryNotseen.svg",
+                                                        color: backendColor,
+                                                      )),
                                                   Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(4.5, 4, 4, 4),

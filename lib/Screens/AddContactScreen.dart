@@ -622,9 +622,11 @@ class _AddContactScreenState extends State<AddContactScreen> {
               child: c.privateProfilePicUrl != ""
                   ? CircleAvatar(
                       backgroundImage: AssetImage("assets/profile.png"),
-                      foregroundImage: CachedNetworkImageProvider(
-                          G.HOST + "api/v1/images/" + c.publicProfilePicUrl!),
-                      // onForegroundImageError: (){}AssetImage("assets/profile.png"),
+                      foregroundImage: CachedNetworkImageProvider(c
+                                  .publicProfilePicUrl !=
+                              null
+                          ? G.HOST + "api/v1/images/" + c.publicProfilePicUrl!
+                          : "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"),
                       radius: 60,
                       backgroundColor: Colors.grey[300],
                     )
@@ -641,7 +643,9 @@ class _AddContactScreenState extends State<AddContactScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  c.privateName.toString(),
+                  c.privateName != null && c.privateName!.isNotEmpty
+                      ? c.privateName!
+                      : "Unknown User",
                   style: TextStyle(
                     color: Color(0xFF303030),
                     fontSize: 16,

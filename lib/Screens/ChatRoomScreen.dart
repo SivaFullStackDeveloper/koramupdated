@@ -216,7 +216,7 @@ class _ChatRoomScreenChatState extends State<ChatRoomScreenChat>
       // if(index==-1)
       // {
       await Provider.of<ChatRoomsProvider>(context, listen: false).addUsers(
-          loggedUserData!.publicName!,
+         loggedUserData?.publicName ?? "No Name",
           G.userPhoneNumber,
           loggedUserData!.publicProfilePicUrl ?? "",
           widget.groupName.id!,
@@ -554,7 +554,7 @@ class _ChatRoomScreenChatState extends State<ChatRoomScreenChat>
     };
     await chatMessage.addMessage(
         _msgInput.text,
-        loggedUserData!.publicName!,
+        loggedUserData?.publicName ?? "No Name",
         G.userPhoneNumber,
         widget.groupName.id!,
         DateTime.now().toString(),

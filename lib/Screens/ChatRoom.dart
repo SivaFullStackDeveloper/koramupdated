@@ -72,10 +72,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
           .fetchChatRoom();
 
       log("isjoinedRoom ${prefs.getBool("isJoinedRoom")} Room Id ${prefs.getString("JoindRoomId")} Room Name ${prefs!.getString("JoindRoomName")}");
-      setState(() {
-        isChatroomLoad = false;
-        isPreferenceFetched = true;
-      });
+      if (mounted) {
+        setState(() {
+          isChatroomLoad = false;
+          isPreferenceFetched = true;
+        });
+      }
     });
 
     super.initState();

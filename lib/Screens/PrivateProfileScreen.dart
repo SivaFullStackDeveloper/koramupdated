@@ -209,12 +209,18 @@ class _PrivateProfileScreenState extends State<PrivateProfileScreen> {
 
     if (widget.isFromHome) {
       tempImagePrivate = null;
-      _nameController.text = userModel.LoggedUser!.privateName!;
+      _nameController.text = userModel.LoggedUser!.privateName ?? "No Name";
       if (userModel.LoggedUser!.dateofbirth != null ||
           userModel.LoggedUser!.dateofbirth != "") {
-        UserDob = DateTime.parse(userModel.LoggedUser!.dateofbirth!).toString();
-        initialDate = DateTime.parse(userModel.LoggedUser!.dateofbirth!);
-        log("userDOb${initialDate.toString()}");
+        UserDob = userModel.LoggedUser?.dateofbirth != null
+            ? DateTime.parse(userModel.LoggedUser!.dateofbirth!).toString()
+            : DateTime(1994, 4, 18).toString();
+
+        initialDate = userModel.LoggedUser?.dateofbirth != null
+            ? DateTime.parse(userModel.LoggedUser!.dateofbirth!)
+            : DateTime(1994, 4, 18);
+
+        log("userDOb ${initialDate.toString()}");
       }
       genderValue = userModel.LoggedUser!.gender;
       checked = true;
@@ -416,7 +422,10 @@ class _PrivateProfileScreenState extends State<PrivateProfileScreen> {
                                         radius: 60,
                                         backgroundColor: Colors.grey[300],
                                       )
-                                    : widget.isFromHome
+                                    : widget.isFromHome &&
+                                            userModel.LoggedUser
+                                                    ?.privateProfilePicUrl !=
+                                                null
                                         ? CommanWidgets().cacheProfileDisplay(
                                             userModel.LoggedUser!
                                                 .privateProfilePicUrl!)
@@ -539,51 +548,86 @@ class _PrivateProfileScreenState extends State<PrivateProfileScreen> {
                   ),
                   subtitle: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 7, 20, 16),
-                    child: DateTimeField(
-                      style: TextStyle(
-                        color: Color(0xFF303030),
-                        fontSize: 14,
-                        fontFamily: 'Helvetica',
-                        fontWeight: FontWeight.w700,
-                      ),
-                      initialValue: widget.isFromHome
-                          ? DateTime.parse(
-                              widget.userData.dateofbirth.toString())
-                          : initialDate,
-                      onChanged: (v) {
-                        setState(() {
-                          UserDob = v.toString();
-                        });
-                      },
-                      format: DateFormat("dd-MM-yyyy"),
-                      focusNode: _dobFocuseNode,
-                      decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.calendar_today),
-                          // Container(
-                          //     width: 10,
-                          //     height: 10,
-                          //     child: SvgPicture.asset("assets/calendar.svg")),
+                    child: 
+DateTimeField(
+  style: TextStyle(
+    color: Color(0xFF303030),
+    fontSize: 14,
+    fontFamily: 'Helvetica',
+    fontWeight: FontWeight.w700,
+  ),
+  initialValue: widget.isFromHome && widget.userData.dateofbirth != null
+      ? _parseDate(widget.userData.dateofbirth.toString())
+      : _defaultDate(),
+  onChanged: (v) {
+    setState(() {
+      UserDob = v.toString();
+    });
+  },
+  format: DateFormat("dd-MM-yyyy"),
+  focusNode: _dobFocuseNode,
+  decoration: InputDecoration(
+    suffixIcon: Icon(Icons.calendar_today),
+    border: _dobFocuseNode.hasFocus
+        ? OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.orange),
+            borderRadius: BorderRadius.circular(10))
+        : OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10))),
+  onShowPicker: (BuildContext context, DateTime? currentValue) async {
+    var date = await showDatePicker(
+        context: context,
+        firstDate: DateTime(1900),
+        initialDate: currentValue ?? DateTime.now(),
+        lastDate: DateTime.now());
+    return date ?? currentValue;
+  },
+),
+                    // DateTimeField(
+                    //   style: TextStyle(
+                    //     color: Color(0xFF303030),
+                    //     fontSize: 14,
+                    //     fontFamily: 'Helvetica',
+                    //     fontWeight: FontWeight.w700,
+                    //   ),
+                    //   initialValue: widget.isFromHome
+                    //       ? DateTime.parse(
+                    //           widget.userData.dateofbirth.toString())
+                    //       : initialDate,
+                    //   onChanged: (v) {
+                    //     setState(() {
+                    //       UserDob = v.toString();
+                    //     });
+                    //   },
+                    //   format: DateFormat("dd-MM-yyyy"),
+                    //   focusNode: _dobFocuseNode,
+                    //   decoration: InputDecoration(
+                    //       suffixIcon: Icon(Icons.calendar_today),
+                    //       // Container(
+                    //       //     width: 10,
+                    //       //     height: 10,
+                    //       //     child: SvgPicture.asset("assets/calendar.svg")),
 
-                          border: _dobFocuseNode.hasFocus
-                              ? OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.orange),
-                                  borderRadius: BorderRadius.circular(10))
-                              : OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10))),
-                      onShowPicker:
-                          (BuildContext context, DateTime? currentValue) async {
-                        var date = await showDatePicker(
-                            context: context,
-                            firstDate: DateTime(1900),
-                            initialDate: currentValue ?? DateTime.now(),
-                            lastDate: DateTime.now());
-                        if (date != null) {
-                          return date;
-                        } else {
-                          return currentValue;
-                        }
-                      },
-                    ),
+                    //       border: _dobFocuseNode.hasFocus
+                    //           ? OutlineInputBorder(
+                    //               borderSide: BorderSide(color: Colors.orange),
+                    //               borderRadius: BorderRadius.circular(10))
+                    //           : OutlineInputBorder(
+                    //               borderRadius: BorderRadius.circular(10))),
+                    //   onShowPicker:
+                    //       (BuildContext context, DateTime? currentValue) async {
+                    //     var date = await showDatePicker(
+                    //         context: context,
+                    //         firstDate: DateTime(1900),
+                    //         initialDate: currentValue ?? DateTime.now(),
+                    //         lastDate: DateTime.now());
+                    //     if (date != null) {
+                    //       return date;
+                    //     } else {
+                    //       return currentValue;
+                    //     }
+                    //   },
+                    // ),
                   ),
                 ),
               ]),
@@ -717,7 +761,9 @@ class _PrivateProfileScreenState extends State<PrivateProfileScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  CircularProgressIndicator(color: backendColor,),
+                                  CircularProgressIndicator(
+                                    color: backendColor,
+                                  ),
                                 ],
                               ),
                             ),
@@ -966,4 +1012,16 @@ class _PrivateProfileScreenState extends State<PrivateProfileScreen> {
       ),
     );
   }
+  DateTime _parseDate(String date) {
+  try {
+    return DateTime.parse(date);
+  } catch (e) {
+    return _defaultDate(); // Return default date if parsing fails
+  }
+}
+
+/// ✅ Default date (April 18, 1994)
+DateTime _defaultDate() {
+  return DateTime(1994, 4, 18);
+}
 }

@@ -42,7 +42,7 @@ class CommanWidgets{
               child:
               CircularProgressIndicator(
                 value: progress.progress,
-                color: backendColor,
+                color: Colors.transparent,
               ),
             ),
 

@@ -303,7 +303,7 @@ class ChatSocket extends ChangeNotifier {
   sendMessage(var messageJson) async {
     log("emit send message called");
 
-    var responseOfGettoken = await G.getTokenBynumber(messageJson["sentTo"]);
+    var responseOfGettoken = await G.getTokenBynumber(messageJson["sentTo"]??"");
     if (responseOfGettoken == "error") {
       return false;  // Return false if the token fetching fails
     }
