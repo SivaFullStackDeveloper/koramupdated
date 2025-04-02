@@ -516,7 +516,7 @@ class _AddContactScreenState extends State<AddContactScreen> {
               ),
               builder: (ctx) => Container(
                 padding: EdgeInsets.all(16.0),
-                height: 200,
+                height: 250,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -595,7 +595,8 @@ class _AddContactScreenState extends State<AddContactScreen> {
                               )),
                         ),
                       ],
-                    )
+                    ),
+                    SizedBox(height: 50)
                   ],
                 ),
               ),

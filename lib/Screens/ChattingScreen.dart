@@ -43,6 +43,13 @@ class ChattingScreen extends StatefulWidget with RouteAware {
   Function? callBack;
   String? otherUserNumber;
   ChattingScreen({this.otherUserDetail, this.callBack, this.otherUserNumber});
+static Route<dynamic> route(String? userId) {
+    return MaterialPageRoute(
+      builder: (context) => ChattingScreen(
+        otherUserNumber: userId,
+      ),
+    );
+  }
 
   @override
   _ChattingScreenState createState() => _ChattingScreenState();
@@ -459,6 +466,8 @@ class _ChattingScreenState extends State<ChattingScreen>
   @override
   void initState() {
     super.initState();
+     WidgetsBinding.instance.addObserver(this);
+    print('Navigated to ChattingScreen with user: ${widget.otherUserNumber}');
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await startFunctions(widget.otherUserDetail!.phoneNumber!);
     });
@@ -882,7 +891,7 @@ class _ChattingScreenState extends State<ChattingScreen>
                         isLast = false;
                       }
                       return Padding(
-                        padding: EdgeInsets.only(bottom: isLast ? 60.0 : 0),
+                        padding: EdgeInsets.only(bottom: isLast ? 80.0 : 0),
                         child:
                             NewMessage(messageData: PvtMessageShowOnScreen[i]),
                       );

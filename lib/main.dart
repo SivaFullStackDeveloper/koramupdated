@@ -44,6 +44,7 @@ import 'Models/NotificationModel.dart';
 import 'firebase_options.dart';
 
 final GlobalKey<NavigatorState> MainNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 String originalDataString = "";
 String modifiedString = "";
 bool isBackgroundCall = false;
@@ -51,7 +52,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await BackgroundService.initialize();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-
+  AwesomeNotifications().setListeners(
+    onActionReceivedMethod: onActionReceivedMethod,
+  );
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
         channelKey: "call_channel",
@@ -84,7 +87,22 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(fireBaseMessagingBackgroundHandler);
   AwesomeNotifications().setListeners(
     onActionReceivedMethod: (receivedAction) async {
+      print("hi==========<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
       // Handle notification actions globally
+      if (receivedAction.payload != null &&
+          receivedAction.payload!['screen'] == 'chat') {
+             print("hi==========<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        String? userId = receivedAction.payload!['userId'];
+        if (userId != null) {
+          MainNavigatorKey.currentState?.push(
+            ChattingScreen.route(userId),
+          );
+          MainNavigatorKey.currentState?.pushNamed(
+            '/chattingScreen',
+            arguments: userId,
+          );
+        }
+      }
       if (receivedAction.buttonKeyPressed == "accept_call") {
         String? callerName = receivedAction.payload?['name'];
         String? callerNumber = receivedAction.payload?['caller'];
@@ -116,8 +134,34 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
+  if (receivedAction.payload != null &&
+      receivedAction.payload!['screen'] == 'chat') {
+    MainNavigatorKey.currentState?.pushNamed(
+      '/chattingScreen',
+      arguments: receivedAction.payload!['userId'],
+    );
+  }
+}
+
 Future<void> fireBaseMessagingBackgroundHandler(RemoteMessage event) async {
   switch (event.data["type"]) {
+    case "Message":
+    AwesomeNotifications().createNotification(
+  content: NotificationContent(
+      id: 123,
+      channelKey: "message_channel",
+      color: Colors.white,
+      title: event.data["name"],
+      body: event.data["message"] ?? "You have a new message",
+      category: NotificationCategory.Message,
+      wakeUpScreen: true,
+      fullScreenIntent: false,
+      autoDismissible: true,
+      backgroundColor: RuntimeStorage.instance.PrimaryOrange,
+      payload: {"screen": "chat", "userId": event.data["userId"] ?? ""}),
+);
+
     case "CallRequest":
       {
         isBackgroundCall = true;
@@ -154,23 +198,9 @@ Future<void> fireBaseMessagingBackgroundHandler(RemoteMessage event) async {
       }
       break;
 
-    case "Message":
-      {
-        log("Message case received");
-        AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: 10,
-            channelKey: 'message_channel',
-            title: '${event.data["senderName"]}',
-            body: '${event.data["message"]}',
-            displayOnBackground: true,
-            displayOnForeground: true,
-            backgroundColor: Colors.white,
-            notificationLayout: NotificationLayout.Default,
-          ),
-        );
-      }
-      break;
+    
+       
+     
   }
 }
 
@@ -284,7 +314,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     load();
     WidgetsBinding.instance.addPostFrameCallback((_) => updateColor());
-  
+    AwesomeNotifications().setListeners(
+        onActionReceivedMethod: (ReceivedAction receivedAction) async {
+      if (receivedAction.payload != null &&
+          receivedAction.payload!['screen'] == 'chat') {
+        MainNavigatorKey.currentState?.pushNamed(
+          '/chattingScreen',
+          arguments: receivedAction.payload!['userId'],
+        );
+      }
+    });
   }
 
   @override
@@ -353,6 +392,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       log("on message opened: $event");
       log("ON MESssage Opennen called");
+      MainNavigatorKey.currentState?.push(
+            ChattingScreen.route(event.data['userId']),
+          );
     });
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -388,7 +430,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               );
             },
             '/homeScreen': (context) => HomeScreen(),
-            '/chattingScreen': (context) => ChattingScreen()
+            '/chattingScreen': (context) => ChattingScreen(),
           },
           navigatorKey: MainNavigatorKey,
           debugShowCheckedModeBanner: false,

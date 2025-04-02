@@ -327,7 +327,9 @@ class _ChatScreenState extends State<ChatScreen>
               DateTime.parse(filteredMessage.last.time);
           FinalFriendList[index].latestMessage = filteredMessage.last.message;
           log("after updating the friends list ${FinalFriendList[index].newMessage}");
-          setState(() {});
+          if (mounted) {
+                setState(() {});
+          }
         }
       }
 
