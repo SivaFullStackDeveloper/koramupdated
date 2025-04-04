@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:fl_country_code_picker/fl_country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -119,14 +120,18 @@ class _LoginScreenState extends State<LoginScreen> {
           isGettingCountry = false;
         });
       } else {
+          Locale locale = PlatformDispatcher.instance.locale;
+  String? countryCodeString = locale.countryCode;
+  
         setState(() {
+         code = CountryCode.fromCode(countryCodeString ?? "IN")!;
           isGettingCountry = false;
         });
-        CommanWidgets().showSnackBar(
-            context,
-            "Unable to get your Country code Please select it Manually ",
-            Colors.deepOrange);
-        print('Failed to get country: ${response.statusCode}');
+        // CommanWidgets().showSnackBar(
+        //     context,
+        //     "Unable to get your Country code Please select it Manually ",
+        //     Colors.deepOrange);
+        // print('Failed to get country: ${response.statusCode}');
       }
     } catch (e) {
       CommanWidgets().showSnackBar(

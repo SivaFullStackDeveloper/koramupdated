@@ -20,10 +20,12 @@ import 'package:koram_app/Helper/background_service.dart';
 import 'package:koram_app/Helper/color.dart';
 import 'package:koram_app/Models/ChatRoom.dart';
 import 'package:koram_app/Models/Message.dart';
+import 'package:koram_app/Models/NewUserModel.dart';
 import 'package:koram_app/Models/User.dart';
 import 'package:koram_app/Screens/AudioCalling.dart';
 import 'package:koram_app/Screens/ChattingScreen.dart';
 import 'package:koram_app/Screens/HomeScreen.dart';
+import 'package:koram_app/Screens/PublicProfileScreen.dart';
 import 'package:koram_app/Screens/SplashScreen.dart';
 import 'package:koram_app/Screens/VideoCallingScreen.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -49,6 +51,7 @@ String originalDataString = "";
 String modifiedString = "";
 bool isBackgroundCall = false;
 Future<void> main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
   await BackgroundService.initialize();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -91,7 +94,7 @@ Future<void> main() async {
       // Handle notification actions globally
       if (receivedAction.payload != null &&
           receivedAction.payload!['screen'] == 'chat') {
-             print("hi==========<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        print("hi==========<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
         String? userId = receivedAction.payload!['userId'];
         if (userId != null) {
           MainNavigatorKey.currentState?.push(
@@ -147,20 +150,20 @@ Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
 Future<void> fireBaseMessagingBackgroundHandler(RemoteMessage event) async {
   switch (event.data["type"]) {
     case "Message":
-    AwesomeNotifications().createNotification(
-  content: NotificationContent(
-      id: 123,
-      channelKey: "message_channel",
-      color: Colors.white,
-      title: event.data["name"],
-      body: event.data["message"] ?? "You have a new message",
-      category: NotificationCategory.Message,
-      wakeUpScreen: true,
-      fullScreenIntent: false,
-      autoDismissible: true,
-      backgroundColor: RuntimeStorage.instance.PrimaryOrange,
-      payload: {"screen": "chat", "userId": event.data["userId"] ?? ""}),
-);
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: 123,
+            channelKey: "message_channel",
+            color: Colors.white,
+            title: event.data["name"],
+            body: event.data["message"] ?? "You have a new message",
+            category: NotificationCategory.Message,
+            wakeUpScreen: true,
+            fullScreenIntent: false,
+            autoDismissible: true,
+            backgroundColor: RuntimeStorage.instance.PrimaryOrange,
+            payload: {"screen": "chat", "userId": event.data["userId"] ?? ""}),
+      );
 
     case "CallRequest":
       {
@@ -197,10 +200,6 @@ Future<void> fireBaseMessagingBackgroundHandler(RemoteMessage event) async {
             ]);
       }
       break;
-
-    
-       
-     
   }
 }
 
@@ -389,12 +388,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    //        UserDetail userData = UserDetail();
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    // if (G.loggedinUser.publicProfilePicUrl == "" ||G.loggedinUser.publicProfilePicUrl==null ||G.loggedinUser.publicName==null ||
+    //     G.loggedinUser.publicName == "") {
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //           builder: (context) => PublicProfileScreen(
+    //                 userData: userData,
+    //                 isFromHome: true,
+    //               )));
+    // }
+    //   });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) async {
       log("on message opened: $event");
       log("ON MESssage Opennen called");
       MainNavigatorKey.currentState?.push(
-            ChattingScreen.route(event.data['userId']),
-          );
+        ChattingScreen.route(event.data['userId']),
+      );
     });
 
     SystemChrome.setSystemUIOverlayStyle(
@@ -498,3 +510,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 }
+
+
+

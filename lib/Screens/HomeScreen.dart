@@ -15,6 +15,7 @@ import 'package:koram_app/Helper/Helper.dart';
 import 'package:koram_app/Helper/NotificationServices.dart';
 import 'package:koram_app/Helper/PageProviderService.dart';
 import 'package:koram_app/Models/Message.dart';
+import 'package:koram_app/Models/NewUserModel.dart';
 import 'package:koram_app/Models/Notification.dart' as N;
 import 'package:koram_app/Models/User.dart';
 import 'package:koram_app/Screens/AudioCalling.dart';
@@ -24,6 +25,7 @@ import 'package:koram_app/Screens/ChatRoom.dart';
 import 'package:koram_app/Screens/LoginScreen.dart';
 import 'package:koram_app/Screens/NearBy.dart';
 import 'package:koram_app/Screens/PrivateProfileScreen.dart';
+import 'package:koram_app/Screens/PublicProfileScreen.dart';
 import 'package:koram_app/Screens/test.dart';
 import 'package:koram_app/Widget/Badge.dart';
 import 'package:koram_app/Widget/BottomSheetContent.dart';
@@ -347,7 +349,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 //   }
 // }
 
-
 class HomeScreen extends StatefulWidget with WidgetsBindingObserver {
   HomeScreen({Key? key, this.justRegisteredDate, this.backgroundCAll})
       : super(key: key);
@@ -370,6 +371,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
+    
     _notificationService = NotificationService();
 
     if (widget.backgroundCAll == true) {
@@ -380,6 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// **Handles Chat Page Switching Efficiently**
   getChildren(int pageService) {
+
     switch (pageService) {
       case 0:
         return ChatScreen(_notificationService, () {});

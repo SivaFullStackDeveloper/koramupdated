@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:koram_app/Models/Notification.dart' as N;
+import 'package:koram_app/Screens/PublicProfileScreen.dart';
 import 'package:provider/provider.dart';
 
 import '../Helper/Helper.dart';
@@ -12,7 +13,7 @@ class AppBarWidget extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-  
+
     List<N.Notification> notification =
         Provider.of<N.Notifications>(context).notification;
     return AppBar(

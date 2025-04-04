@@ -355,17 +355,17 @@ class UsersProviderClass with ChangeNotifier {
       await prefs.setBool('logedIn', true);
     }
     http.Response res = await http.post(Uri.parse(url), body: {
-      "gender": user.gender ?? "",
-      "public_gender": user.publicGender ?? "",
-      "public_profile_pic_url": user.publicProfilePicUrl ?? "",
-      "private_profile_pic_url": user.privateProfilePicUrl ?? "",
-      "privateName": user.privateName ?? "",
+      "gender": user.gender ?? "Male",
+      "public_gender": user.publicGender ?? "Male",
+      "public_profile_pic_url": user.publicProfilePicUrl ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      "private_profile_pic_url": user.privateProfilePicUrl ?? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      "privateName": user.privateName ?? "No Name",
       "phone_number": user.phoneNumber ?? "",
-      "role": user.role ?? "",
-      "publicName": user.publicName ?? "",
+      "role": "User",
+      "publicName": user.publicName ?? "No Name",
       "dateofbirth": user.dateofbirth ?? "",
       "noCodeNumber": user.noCodeNumber ?? "",
-      "firebaseToken": prefs.getString("FirebaseToken"),
+      "firebaseToken": prefs.getString("FirebaseToken")??"",
       "isPrivate": isPrivate.toString(),
       "lat": user.lat.toString(),
       "lon": user.lon.toString()

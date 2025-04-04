@@ -10,6 +10,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:koram_app/Models/User.dart';
+import 'package:koram_app/Screens/PublicProfileScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
@@ -109,6 +110,7 @@ class G {
               responseData['userDetail']['private_profile_pic_url'].toString(),
               "private");
         } else {
+          
           log("userr not found or no pic ");
         }
       }

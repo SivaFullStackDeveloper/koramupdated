@@ -43,7 +43,7 @@ class ChattingScreen extends StatefulWidget with RouteAware {
   Function? callBack;
   String? otherUserNumber;
   ChattingScreen({this.otherUserDetail, this.callBack, this.otherUserNumber});
-static Route<dynamic> route(String? userId) {
+  static Route<dynamic> route(String? userId) {
     return MaterialPageRoute(
       builder: (context) => ChattingScreen(
         otherUserNumber: userId,
@@ -466,7 +466,7 @@ class _ChattingScreenState extends State<ChattingScreen>
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     print('Navigated to ChattingScreen with user: ${widget.otherUserNumber}');
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await startFunctions(widget.otherUserDetail!.phoneNumber!);
@@ -687,7 +687,16 @@ class _ChattingScreenState extends State<ChattingScreen>
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar:PreferredSize(
+    preferredSize: Size.fromHeight(60.0),
+    child: GestureDetector(
+      onTap: () {
+        print("AppBar tapped!");
+        setState(() {
+          displayOptions = false;
+        });
+      },
+      child: AppBar(
         elevation: 0.5,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -768,6 +777,9 @@ class _ChattingScreenState extends State<ChattingScreen>
         actions: [
           GestureDetector(
               onTap: () async {
+                    setState(() {
+                              displayOptions = false;
+                            });
                 try {
                   log("inside try of the phone call navigation");
                   if (_isProcessingCAll) return; // Prevent multiple taps
@@ -806,6 +818,12 @@ class _ChattingScreenState extends State<ChattingScreen>
           ),
           GestureDetector(
               onTap: () async {
+        
+ 
+             setState(() {
+                              displayOptions = false;
+                            });
+     
                 try {
                   log("inside try of the phone call navigation");
                   if (_isProcessingCAll) return; // Prevent multiple taps
@@ -866,7 +884,7 @@ class _ChattingScreenState extends State<ChattingScreen>
           //   width: 10,
           // ),
         ],
-      ),
+      ),)),
       body: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Stack(
@@ -874,7 +892,9 @@ class _ChattingScreenState extends State<ChattingScreen>
             Positioned.fill(
               child: GestureDetector(
                 onTap: () {
-                  displayOptions = false;
+                  setState(() {
+                    displayOptions = false;
+                  });
                 },
                 child: ListView.builder(
                     physics: BouncingScrollPhysics(),
@@ -904,8 +924,9 @@ class _ChattingScreenState extends State<ChattingScreen>
               right: 0,
               child: GestureDetector(
                 onTap: () {
-                  displayOptions = false;
-                  setState(() {});
+                  setState(() {
+                    displayOptions = false;
+                  });
                 },
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 5),
@@ -952,7 +973,9 @@ class _ChattingScreenState extends State<ChattingScreen>
                             // padding: EdgeInsets.only(left: 20,right: 20),
                             child: TextField(
                               onTap: () {
-                                displayOptions = false;
+                                setState(() {
+                                  displayOptions = false;
+                                });
                               },
                               focusNode: textFocusNode,
                               controller: _msgInput,
@@ -977,7 +1000,9 @@ class _ChattingScreenState extends State<ChattingScreen>
                         ),
                         GestureDetector(
                           onTap: () {
-                            displayOptions = false;
+                            setState(() {
+                              displayOptions = false;
+                            });
 
                             _pickFile(chatSocket, context);
                           },
@@ -992,7 +1017,9 @@ class _ChattingScreenState extends State<ChattingScreen>
                         ),
                         GestureDetector(
                           onTap: () {
-                            displayOptions = false;
+                             setState(() {
+                              displayOptions = false;
+                            });
                             onSubmit(chatSocket, context);
                           },
                           child: Padding(

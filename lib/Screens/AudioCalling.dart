@@ -155,25 +155,54 @@ class _AudioCallingScreenState extends State<AudioCallingScreen> {
     try {
       log("Creating Peerconnection ");
       final Map<String, dynamic> configuration = {
-        'iceServers': [
-          {
-            //146.190.142.19
-            // 'urls': [
-            //   'turn:24.199.85.25:3478',
-            //   'turn:koram.in:3478?transport=udp',
-            //   'turn:koram.in:3478?transport=tcp'
-            // ],
 
-            'urls': [
-              'turn:146.190.142.19:3478',
-              'turn:koram.in:3478?transport=udp',
-              'turn:koram.in:3478?transport=tcp'
-            ],
-            "username": "nidishTurnUser",
-            'credential': 'dsafnkdlsnflksdaklfmadsklmf'
-          },
-        ]
-      };
+  'iceServers': [
+    {
+      'urls': 'turn:24.199.85.25:3478?transport=udp',
+      'username': 'nidishTurnUser',
+      'credential': 'dsafnkdlsnflksdaklfmadsklmf',
+    },
+    {
+      'urls': 'turn:24.199.85.25:3478?transport=tcp',
+      'username': 'nidishTurnUser',
+      'credential': 'dsafnkdlsnflksdaklfmadsklmf',
+    },
+    {
+      'urls': 'stun:24.199.85.25:3478',
+    }
+  ],
+  'iceTransportPolicy': 'relay',
+  'bundlePolicy': 'max-bundle',
+  'rtcpMuxPolicy': 'require',
+};
+
+      //   'iceServers': [
+      //     {
+      //       //146.190.142.19
+      //       // 'urls': [
+      //       //   'turn:24.199.85.25:3478',
+      //       //   'turn:koram.in:3478?transport=udp',
+      //       //   'turn:koram.in:3478?transport=tcp'
+      //       // ],
+
+      //       //   'urls': [
+      //       //     'turn:146.190.142.19:3478',
+      //       //     'turn:koram.in:3478?transport=udp',
+      //       //     'turn:koram.in:3478?transport=tcp'
+      //       //   ],
+      //       //   "username": "nidishTurnUser",
+      //       //   'credential': 'dsafnkdlsnflksdaklfmadsklmf'
+      //       // },
+
+      //       'urls': [
+      //         'turn:24.199.85.25:3478?transport=udp',
+      //         'turn:24.199.85.25:3478?transport=tcp'
+      //       ],
+      //       "username": "nidishTurnUser",
+      //       'credential': 'dsafnkdlsnflksdaklfmadsklmf'
+      //     }
+      //   ]
+      // };
       final Map<String, dynamic> offerSdpConstraints = {
         "mandatory": {
           "OfferToReceiveAudio": true,

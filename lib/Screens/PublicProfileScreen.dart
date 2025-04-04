@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:koram_app/Helper/color.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
@@ -128,12 +129,12 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
     if (widget.isFromHome) {
       log("initializing public scren");
 
-      _nameController.text = userPro.LoggedUser!.publicName ?? "No Name";
+      _nameController.text = userPro.LoggedUser?.publicName ?? "No Name";
 
-      genderValue = userPro.LoggedUser!.publicGender;
+      genderValue = userPro.LoggedUser?.publicGender;
       checked = true;
     }
-    log("user profile ${userPro.LoggedUser!.publicProfilePicUrl}");
+    log("user profile ${userPro.LoggedUser?.publicProfilePicUrl}");
     super.didChangeDependencies();
   }
 
@@ -163,9 +164,11 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
       Position position = await LocationService().getCurrentLocation();
       lat = position.latitude;
       long = position.longitude;
+      if (mounted) {
+        await Provider.of<UsersProviderClass>(context, listen: false)
+            .addLocation(position.latitude, position.longitude);
+      }
 
-      await Provider.of<UsersProviderClass>(context, listen: false)
-          .addLocation(position.latitude, position.longitude);
       log("The location service is already on. from private profile screen");
     }
   }
@@ -356,14 +359,19 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
                                         radius: 60,
                                         backgroundColor: Colors.grey[300],
                                       )
-                                    : widget.isFromHome && userPro.LoggedUser?.publicProfilePicUrl != null
-    ? CommanWidgets().cacheProfileDisplay(
-        userPro.LoggedUser!.publicProfilePicUrl!)
-    : CircleAvatar(
-        backgroundImage: AssetImage("assets/profile.png"),
-        radius: 60,
-        backgroundColor: Colors.grey[300],
-      )
+                                    : widget.isFromHome &&
+                                            userPro.LoggedUser
+                                                    ?.publicProfilePicUrl !=
+                                                null
+                                        ? CommanWidgets().cacheProfileDisplay(
+                                            userPro.LoggedUser!
+                                                .publicProfilePicUrl!)
+                                        : CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                                "assets/profile.png"),
+                                            radius: 60,
+                                            backgroundColor: Colors.grey[300],
+                                          )
                                 // : CircleAvatar(
                                 //     radius: 60,
                                 //     backgroundColor: Colors.grey[300],
@@ -583,7 +591,9 @@ class _PublicProfileScreenState extends State<PublicProfileScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  CircularProgressIndicator(color: backendColor,),
+                                  CircularProgressIndicator(
+                                    color: backendColor,
+                                  ),
                                 ],
                               ),
                             ),
